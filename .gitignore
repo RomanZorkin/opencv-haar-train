@@ -1,0 +1,9 @@
+# enviroument
+venv/
+
+# pycharm
+.idea
+
+# dataset
+negative_images/
+positive_images/
