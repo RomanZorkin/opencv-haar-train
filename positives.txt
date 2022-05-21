@@ -1,5 +1,5 @@
-positive_images/00000070_224resized.jpg
-positive_images/00000098_224resized.jpg
+./positive_images/00000070_224resized.jpg
+./positive_images/00000098_224resized.jpg
 ./positive_images/00000497_224resized.jpg
 ./positive_images/00000097_224resized.jpg
 ./positive_images/00000303_224resized.jpg
