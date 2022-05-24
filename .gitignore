@@ -7,3 +7,7 @@ venv/
 # dataset
 negative_images/
 positive_images/
+samples/
+tmp/negative_images
+tmp/positive_images
+tmp/crush

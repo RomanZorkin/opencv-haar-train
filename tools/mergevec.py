@@ -51,6 +51,7 @@ import glob
 import struct
 import argparse
 import traceback
+import os
 
 
 def exception_response(e):
@@ -101,6 +102,7 @@ def merge_vec_files(vec_directory, output_vec_file):
 		vec_directory = vec_directory[:-1]
 	# Get .vec files
 	files = glob.glob('{0}/*.vec'.format(vec_directory))
+	print(files)
 
 	# Check to make sure there are .vec files in the directory
 	if len(files) <= 0:
@@ -117,8 +119,12 @@ def merge_vec_files(vec_directory, output_vec_file):
 	try:
 		with open(files[0], 'rb') as vecfile:
 			content = ''.join(str(line) for line in vecfile.readlines())
+			print(type(content[:12]))
+			#print(vecfile[:12])
 			val = struct.unpack('<iihh', content[:12])
 			prev_image_size = val[1]
+			#msg = f'vecfile: {content[:40]}'
+			#print(f'val = {val},\n msg {msg},\n size = {prev_image_size}')
 	except IOError as e:
 		print('An IO error occured while processing the file: {0}'.format(f))
 		exception_response(e)
@@ -133,9 +139,16 @@ def merge_vec_files(vec_directory, output_vec_file):
 				val = struct.unpack('<iihh', content[:12])
 				num_images = val[0]
 				image_size = val[1]
+				print(image_size, prev_image_size, f)
 				if image_size != prev_image_size:
 					err_msg = """The image sizes in the .vec files differ. These values must be the same. \n The image size of file {0}: {1}\n 
 						The image size of previous files: {0}""".format(f, image_size, prev_image_size)
+					#decision = input('Input y to delete file. Input no to exit: ')
+					decision = 'y'
+					if decision == 'y':
+						os.remove(f)
+						#print(f'Defect file {f} deleted')
+						continue						
 					sys.exit(err_msg)
 
 				total_num_images += num_images
@@ -146,6 +159,7 @@ def merge_vec_files(vec_directory, output_vec_file):
 	
 	# Iterate through the .vec files, writing their data (not the header) to the output file
 	# '<iihh' means 'little endian, int, int, short, short'
+	print(total_num_images, image_size)
 	header = struct.pack('<iihh', total_num_images, image_size, 0, 0)
 	try:
 		with open(output_vec_file, 'wb') as outputfile:
